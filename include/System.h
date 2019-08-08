@@ -78,8 +78,10 @@ public:
     cv::Mat TrackMonocular(const cv::Mat &im, const double &timestamp);
 
     // This stops local mapping thread (map building) and performs only camera tracking.
+    // 通过mutex控制是tracking还是mapping，在该函数里，通过lock_mutex，使得tracking=true
     void ActivateLocalizationMode();
     // This resumes local mapping thread and performs SLAM again.
+    // 控制mapping是否打开
     void DeactivateLocalizationMode();
 
     // Returns true if there have been a big map change (loop closure, global BA)
@@ -125,6 +127,7 @@ public:
 private:
 
     // Input sensor
+    // 枚举类型，存储sensor的类型，包括单目，双目，RGB
     eSensor mSensor;
 
     // ORB vocabulary used for place recognition and feature matching.

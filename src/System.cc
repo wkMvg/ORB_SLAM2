@@ -28,7 +28,10 @@
 
 namespace ORB_SLAM2
 {
-
+//@param strVocFile 存储词袋向量
+//@param strSettingFile 存储系统的配置文件
+//@param sensor 本次slam使用的sensor
+//@param bUseViewer 是否使用viewer来查看slam过程
 System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor,
                const bool bUseViewer):mSensor(sensor), mpViewer(static_cast<Viewer*>(NULL)), mbReset(false),mbActivateLocalizationMode(false),
         mbDeactivateLocalizationMode(false)

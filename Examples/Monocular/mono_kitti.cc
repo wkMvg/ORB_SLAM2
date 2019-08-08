@@ -34,6 +34,10 @@ using namespace std;
 void LoadImages(const string &strSequence, vector<string> &vstrImageFilenames,
                 vector<double> &vTimestamps);
 
+//argv[0] 可执行程序地址
+//argv[1] orb词袋向量
+//argv[2] 配置文件，包括相机内参，特征提取参数(包括特征点个数，金字塔比例因子，金字塔层数，fast角点相应)，可视化的参数
+//argv[3] 图像/视频文件夹地址
 int main(int argc, char **argv)
 {
     if(argc != 4)
@@ -50,6 +54,7 @@ int main(int argc, char **argv)
     int nImages = vstrImageFilenames.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
+    // 初始化一个system对象slam，使得orb-slam的整个系统线程准备好处理图像
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::MONOCULAR,true);
 
     // Vector for tracking time statistics
