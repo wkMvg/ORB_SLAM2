@@ -58,29 +58,36 @@ public:
     Frame(const cv::Mat &imGray, const double &timeStamp, ORBextractor* extractor,ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth);
 
     // Extract ORB on the image. 0 for left image and 1 for right image.
+    // orb特征点和描述子提取
     void ExtractORB(int flag, const cv::Mat &im);
 
     // Compute Bag of Words representation.
+    // 计算当前的词袋向量
     void ComputeBoW();
 
     // Set the camera pose.
+    //设置当前帧的姿态和位置
     void SetPose(cv::Mat Tcw);
 
     // Computes rotation, translation and camera center matrices from the camera pose.
+    // 估计是从计算得到的更新当前的旋转矩阵
     void UpdatePoseMatrices();
 
     // Returns the camera center.
+    // 获取图像光心位置
     inline cv::Mat GetCameraCenter(){
         return mOw.clone();
     }
 
     // Returns inverse of rotation
+    // 求旋转矩阵的逆
     inline cv::Mat GetRotationInverse(){
         return mRwc.clone();
     }
 
     // Check if a MapPoint is in the frustum of the camera
     // and fill variables of the MapPoint to be used by the tracking
+    // 判断点是否再当前图像的视场内
     bool isInFrustum(MapPoint* pMP, float viewingCosLimit);
 
     // Compute the cell of a keypoint (return false if outside the grid)

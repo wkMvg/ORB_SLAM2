@@ -229,6 +229,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     // Check mode change
     {
         unique_lock<mutex> lock(mMutexMode);
+        //采用互斥锁进行锁定，判断当前状态，在初始化system对象时，已经将这两个变量初始化为false，因此第一次不会经过这里
         if(mbActivateLocalizationMode)
         {
             mpLocalMapper->RequestStop();

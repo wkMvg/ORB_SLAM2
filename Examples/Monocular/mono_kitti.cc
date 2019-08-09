@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     int nImages = vstrImageFilenames.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    // 初始化一个system对象slam，使得orb-slam的整个系统线程准备好处理图像
+    // 初始化一个system对象slam，使得orb-slam的整个系统线程准备好处理图像,包括初始化localmapping，loopclosing线程（track直接是主线程），以及必要的对象的初始化
     ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::MONOCULAR,true);
 
     // Vector for tracking time statistics
@@ -66,6 +66,7 @@ int main(int argc, char **argv)
     cout << "Images in the sequence: " << nImages << endl << endl;
 
     // Main loop
+    // 主流程
     cv::Mat im;
     for(int ni=0; ni<nImages; ni++)
     {
@@ -85,7 +86,8 @@ int main(int argc, char **argv)
         std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
 #endif
 
-        // Pass the image to the SLAM system
+        // Pass the image to the SLAM system、
+        // 进行slam过程的主要程序
         SLAM.TrackMonocular(im,tframe);
 
 #ifdef COMPILEDWITHC11

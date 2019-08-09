@@ -234,7 +234,7 @@ cv::Mat Tracking::GrabImageRGBD(const cv::Mat &imRGB,const cv::Mat &imD, const d
     return mCurrentFrame.mTcw.clone();
 }
 
-
+//1. track外层函数，将输入的图像转换成灰度图，并且初始化当前帧对象currentFrame，主要的跟踪过程再track()函数里
 cv::Mat Tracking::GrabImageMonocular(const cv::Mat &im, const double &timestamp)
 {
     mImGray = im;
@@ -281,7 +281,7 @@ void Tracking::Track()
         if(mSensor==System::STEREO || mSensor==System::RGBD)
             StereoInitialization();
         else
-            MonocularInitialization();
+            MonocularInitialization(); //进行单目初始化
 
         mpFrameDrawer->Update(this);
 
@@ -304,6 +304,7 @@ void Tracking::Track()
                 // Local Mapping might have changed some MapPoints tracked in last frame
                 CheckReplacedInLastFrame();
 
+                //如果当前的速度是空或者重定位后的后两帧，都采用track KeyFrame的方式
                 if(mVelocity.empty() || mCurrentFrame.mnId<mnLastRelocFrameId+2)
                 {
                     bOK = TrackReferenceKeyFrame();
@@ -562,7 +563,7 @@ void Tracking::StereoInitialization()
 
 void Tracking::MonocularInitialization()
 {
-
+//首先判断状态，如果mpInitializer是false，则找到一帧图像的关键点数量大于100的，设定为初始帧
     if(!mpInitializer)
     {
         // Set Reference Frame
@@ -753,7 +754,7 @@ void Tracking::CheckReplacedInLastFrame()
     }
 }
 
-
+//跟踪关键帧
 bool Tracking::TrackReferenceKeyFrame()
 {
     // Compute Bag of Words vector

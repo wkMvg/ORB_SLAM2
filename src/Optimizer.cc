@@ -236,11 +236,14 @@ void Optimizer::BundleAdjustment(const vector<KeyFrame *> &vpKFs, const vector<M
 
 }
 
+//只优化姿态
 int Optimizer::PoseOptimization(Frame *pFrame)
 {
     g2o::SparseOptimizer optimizer;
     g2o::BlockSolver_6_3::LinearSolverType * linearSolver;
 
+    //6表示姿态的维数，3表示地标的维数，再slam中，姿态一般通过α，β，γ，tx，ty，tz表示，地标一般是三维点，因此一般线性求解器都采用6，3形式，这里采用dense，是因为hessian矩阵的维数很低。
+    //采用sparse反而会增大负担
     linearSolver = new g2o::LinearSolverDense<g2o::BlockSolver_6_3::PoseMatrixType>();
 
     g2o::BlockSolver_6_3 * solver_ptr = new g2o::BlockSolver_6_3(linearSolver);
@@ -257,7 +260,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
     vSE3->setFixed(false);
     optimizer.addVertex(vSE3);
 
-    // Set MapPoint vertices
+    // Set MapPoint vertices 为啥还要优化地图点？后边也没增加别的vertex了啊 
     const int N = pFrame->N;
 
     vector<g2o::EdgeSE3ProjectXYZOnlyPose*> vpEdgesMono;
@@ -273,7 +276,7 @@ int Optimizer::PoseOptimization(Frame *pFrame)
     const float deltaMono = sqrt(5.991);
     const float deltaStereo = sqrt(7.815);
 
-
+// 生成edge 
     {
     unique_lock<mutex> lock(MapPoint::mGlobalMutex);
 
